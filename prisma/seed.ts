@@ -5,10 +5,8 @@ import {
   users,
 } from "../app/lib/placeholder-data.js";
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
 import { v4 as uuid } from "uuid";
-
-const prisma = new PrismaClient();
+import prisma from "./prisma-client.ts";
 
 async function seedUsers() {
   try {
