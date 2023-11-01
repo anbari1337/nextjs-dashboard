@@ -15,11 +15,16 @@ model User {
     password String @db.VarChar(255)
 }
 
+enum Status {
+    paid
+    pending
+}
+
 model Invoice {
     id         String   @id @unique @default(uuid())
     customer   Customer @relation(fields: [customerId], references: [id])
     amount     Int
-    status     String   @db.VarChar(255)
+    status     Status
     date       String
     customerId String
 }

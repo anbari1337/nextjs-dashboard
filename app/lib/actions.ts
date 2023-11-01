@@ -38,3 +38,39 @@ export async function createInvoide(formData: FormData) {
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
 }
+
+const UpdateInvoice = InvoiceSchema.omit({ date: true, id: true });
+
+export async function updateInvoice(id: string, formData: FormData) {
+  const { customerId, amount, status } = UpdateInvoice.parse({
+    customerId: formData.get("customerId"),
+    amount: formData.get("amount"),
+    status: formData.get("status"),
+  });
+
+  const amountInCents = amount * 100;
+
+  const result = await prisma.invoice.update({
+    where: {
+      id,
+    },
+    data: {
+      customerId,
+      amount: amountInCents,
+      status,
+    },
+  });
+
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
+}
+
+export async function deleteInvoice(id: string) {
+  const result = await prisma.invoice.delete({
+    where: {
+      id,
+    },
+  });
+
+  revalidatePath("/dashboard/invoices");
+}

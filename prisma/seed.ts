@@ -2,6 +2,7 @@ import { customers, revenue, users } from "../app/lib/placeholder-data.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import prisma from "./prisma-client.ts";
+import { Invoice } from "@/app/lib/definitions.ts";
 
 async function seedUsers() {
   try {
@@ -50,7 +51,7 @@ async function seedCustomers() {
               create: customer.invoices.map((invoice) => ({
                 id: uuid(),
                 amount: invoice.amount,
-                status: invoice.status,
+                status: invoice.status as "pending" | "paid",
                 date: invoice.date,
               })),
             },
