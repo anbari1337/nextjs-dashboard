@@ -1,9 +1,4 @@
-import {
-  invoices,
-  customers,
-  revenue,
-  users,
-} from "../app/lib/placeholder-data.js";
+import { customers, revenue, users } from "../app/lib/placeholder-data.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import prisma from "./prisma-client.ts";
@@ -40,30 +35,6 @@ async function seedUsers() {
   }
 }
 
-async function seedInvoices() {
-  try {
-    // Insert data into the "invoices" table
-    const insertedInvoices = await Promise.all(
-      invoices.map(async (invoice) => {
-        const result = await prisma.invoice.create({
-          data: {
-            id: uuid(),
-            customer_id: invoice.customer_id,
-            amount: invoice.amount,
-            status: invoice.status,
-            date: invoice.date,
-          },
-        });
-      })
-    );
-
-    console.log(`Seeded ${insertedInvoices.length} invoices`);
-  } catch (error) {
-    console.error("Error seeding invoices:", error);
-    throw error;
-  }
-}
-
 async function seedCustomers() {
   try {
     // Insert data into the "customers" table
@@ -75,6 +46,14 @@ async function seedCustomers() {
             email: customer.email,
             name: customer.name,
             image_url: customer.image_url,
+            invoice: {
+              create: customer.invoices.map((invoice) => ({
+                id: uuid(),
+                amount: invoice.amount,
+                status: invoice.status,
+                date: invoice.date,
+              })),
+            },
           },
         });
       })
@@ -113,7 +92,6 @@ async function main() {
 
   await seedUsers();
   await seedCustomers();
-  await seedInvoices();
   await seedRevenue();
 
   await prisma.$disconnect();

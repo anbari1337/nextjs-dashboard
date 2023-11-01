@@ -16,18 +16,20 @@ model User {
 }
 
 model Invoice {
-    id          String @id @unique @default(uuid())
-    customer_id String
-    amount      Int
-    status      String @db.VarChar(255)
-    date        String
+    id         String   @id @unique @default(uuid())
+    customer   Customer @relation(fields: [customerId], references: [id])
+    amount     Int
+    status     String   @db.VarChar(255)
+    date       String
+    customerId String
 }
 
 model Customer {
-    id        String @id @unique @default(uuid())
-    name      String @db.VarChar(255)
-    email     String @unique
-    image_url String @db.VarChar(255)
+    id        String    @id @unique @default(uuid())
+    name      String    @db.VarChar(255)
+    email     String    @unique
+    image_url String    @db.VarChar(255)
+    invoice   Invoice[]
 }
 
 model Revenue {
